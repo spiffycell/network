@@ -1,0 +1,25 @@
+#!/bin/bash
+# usage - ./createVM vm server
+
+vm=$1
+server=$2
+
+# download iso and move to iso/ folder
+version='18.04'
+iso='ubuntu-18.04.3-desktop-amd64.iso'
+
+if [ ! -f /home/${USER}/VirtualBox\ VMs/iso/$iso ]; then
+	wget http://releases.ubuntu.com/$version/$iso;
+	mkdir /home/${USER}/VirtualBox\ VMs/iso/;
+	mv $iso /home/${USER}/VirtualBox\ VMs/iso/;
+fi
+
+# create and start VM
+VBoxManage createvm --name $vm.$server --ostype Ubuntu_64 --register
+VBoxManage modifyvm $vm.$server --memory 2048
+VBoxManage createhd --filename VirtualBox\ VMs/$vm.$server/$vm.$server.vdi --size 10000 --format VDI
+VBoxManage storagectl $vm.$server --name "SATA Controller" --add sata --controller IntelAhci
+VBoxManage storageattach $vm.$server --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium /home/${USER}/VirtualBox\ VMs/$vm.$server/$vm.$server.vdi
+VBoxManage storagectl $vm.$server --name "IDE Controller" --add ide --controller PIIX4
+VBoxManage storageattach $vm.$server --storagectl "IDE Controller" --port 1 --device 0 --type dvddrive --medium /home/${USER}/VirtualBox\ VMs/iso/$iso 
+VBoxManage startvm $vm.$server --type=headless

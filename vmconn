@@ -1,0 +1,19 @@
+#!/bin/bash
+
+vm=$1
+server=''
+port=''
+user=''
+
+if [ $vm == 'vm01' ]; then
+	ssh -t $server 'ssh -p $port $user@localhost'
+fi
+
+if [ $vm == 'vm02' ]; then
+	ssh -t $server 'ssh -p $port $user@localhost'
+fi
+
+if [ $vm == 'vm03' ]; then
+	ssh -t $server 'ssh -p $port $user@localhost'
+fi
+
